@@ -1,4 +1,5 @@
 ﻿using Court_Management.Areas.Identity.Data;
+using Court_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +12,24 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+    public DbSet<Case> Cases { get; set; }
+    public DbSet<CaseComment> CaseComments { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.SubmittedCases)
+            .WithOne(c => c.SubmittedBy)
+            .HasForeignKey(c => c.SubmittedById)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(u => u.AssignedCases)
+            .WithOne(c => c.AssignedTo)
+            .HasForeignKey(c => c.AssignedToId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
