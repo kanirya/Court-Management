@@ -7,16 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Court_Management.Data;
 using Court_Management.Models;
+using Court_Management.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Court_Management.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Court_Management.Controllers
 {
+    [Authorize]
     public class CasesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public CasesController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public CasesController(ApplicationDbContext context,UserManager<ApplicationUser> userManager,RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _userManager = userManager;
+            _roleManager=roleManager;
         }
 
         // GET: Cases
@@ -47,17 +55,14 @@ namespace Court_Management.Controllers
         }
 
         // GET: Cases/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Id");
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Advocate");
+            ViewData["AssignedToId"] = new SelectList(usersInRole, "Id", "UserName");
             ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["StatusList"] = Enum.GetValues(typeof(CaseStatus))
-          .Cast<CaseStatus>()
-          .Select(e => new SelectListItem
-          {
-              Value = e.ToString(),
-              Text = e.ToString()
-          }).ToList();
+            var roles = _roleManager.Roles.ToList();
+            ViewBag.Roles = new SelectList(roles, "Name", "Name");
+
             return View();
         }
 
@@ -66,17 +71,28 @@ namespace Court_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,CreatedAt,UpdatedAt,Status,SubmittedById,AssignedToId")] Case @case)
+        public async Task<IActionResult> Create(CaseDTO ca)
         {
+          
             if (ModelState.IsValid)
             {
-                _context.Add(@case);
+                var user= await _userManager.GetUserAsync(User);
+               var  A = new Case
+                {
+                    Title = ca.Title,
+                    Description = ca.Description,
+                    AssignedToId = ca.AssignedToId,
+                   SubmittedById=user.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Status = CaseStatus.Submitted,
+                    };
+                _context.Add(A);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Id", @case.AssignedToId);
-            ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Id", @case.SubmittedById);
-            return View(@case);
+            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Name");
+            return View(ca);
         }
 
         // GET: Cases/Edit/5

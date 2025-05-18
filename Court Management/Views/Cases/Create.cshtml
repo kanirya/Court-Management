@@ -23,28 +23,11 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control" asp-items="@ViewData["StatusList"] as IEnumerable<SelectListItem>"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SubmittedById" class="control-label"></label>
-                <select asp-for="SubmittedById" class ="form-control" asp-items="ViewBag.SubmittedById"></select>
-            </div>
-            <div class="form-group">
                 <label asp-for="AssignedToId" class="control-label"></label>
-                <select asp-for="AssignedToId" class ="form-control" asp-items="ViewBag.AssignedToId"></select>
+                <select asp-for="AssignedToId" class="form-control" asp-items="ViewBag.AssignedToId"></select>
             </div>
+          
+        
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
