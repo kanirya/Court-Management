@@ -12,9 +12,10 @@ var connectionString = builder.Configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// ✅ Correct way to add Identity with custom ApplicationUser
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>() // Register role system
+    .AddRoles<IdentityRole>() // Enable roles
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
@@ -22,7 +23,7 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// Seed roles
+// ✅ Seed roles
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -52,7 +53,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Cases}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

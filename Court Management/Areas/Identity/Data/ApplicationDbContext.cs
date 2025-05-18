@@ -3,6 +3,7 @@ using Court_Management.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Court_Management.Controllers;
 
 namespace Court_Management.Data;
 
@@ -31,5 +32,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(c => c.AssignedToId)
             .OnDelete(DeleteBehavior.Restrict);
     }
+
+public DbSet<Court_Management.Controllers.UserViewModel> UserViewModel { get; set; } = default!;
 }
 

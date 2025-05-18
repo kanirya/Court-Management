@@ -1,71 +1,211 @@
 ﻿@model IEnumerable<Court_Management.Models.Case>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Case Management";
 }
 
-<h1>Index</h1>
+<div class="case-management-container">
+    <!-- Header Section with Stats -->
+    <div class="header-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title">Case Management</h1>
+                <p class="text-muted">Manage and track all court cases in the system</p>
+            </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>New Case
+                </a>
+            </div>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubmittedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AssignedTo)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubmittedBy.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AssignedTo.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Total Cases</h6>
+                                <h3 class="mb-0">@Model.Count()</h3>
+                            </div>
+                            <div class="stats-icon bg-primary-light">
+                                <i class="bi bi-briefcase text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Active Cases</h6>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.InReview || c.Status == Court_Management.Models.CaseStatus.Submitted)</h3>
+                            </div>
+                            <div class="stats-icon bg-success-light">
+                                <i class="bi bi-clock-history text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Approved</h6>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.Approved)</h3>
+                            </div>
+                            <div class="stats-icon bg-info-light">
+                                <i class="bi bi-check-circle text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Closed</h6>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.Closed)</h3>
+                            </div>
+                            <div class="stats-icon bg-danger-light">
+                                <i class="bi bi-archive text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Cases Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover case-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Case Title</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Last Updated</th>
+                            <th>Assigned To</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="case-icon me-3">
+                                            <i class="bi bi-folder"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">@item.Title</h6>
+                                            <small class="text-muted">@(item.Description?.Length > 60 ? item.Description.Substring(0, 60) + "..." : item.Description)</small>
+                                        </div>
+                                    </div>
+                                </td>
+                              
+                                <td>
+                                    @{
+                                        string badgeClass = item.Status switch
+                                        {
+                                            Court_Management.Models.CaseStatus.Submitted => "badge-soft-secondary",
+                                            Court_Management.Models.CaseStatus.InReview => "badge-soft-warning",
+                                            Court_Management.Models.CaseStatus.Approved => "badge-soft-success",
+                                            Court_Management.Models.CaseStatus.Rejected => "badge-soft-danger",
+                                            Court_Management.Models.CaseStatus.Closed => "badge-soft-dark",
+                                            _ => "badge-soft-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@item.Status</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span>@item.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                        <small class="text-muted">@item.CreatedAt.ToString("hh:mm tt")</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span>@item.UpdatedAt.ToString("MMM dd, yyyy")</span>
+                                        <small class="text-muted">@item.UpdatedAt.ToString("hh:mm tt")</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (item.AssignedTo != null)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar avatar-sm me-2">
+                                                @{
+                                                    string initials = "NA";
+                                                    if (!string.IsNullOrEmpty(item.AssignedTo.Name))
+                                                    {
+                                                        initials = $"{item.AssignedTo.Name[0]}";
+                                                    }
+                                                }
+                                                <div class="avatar-initial rounded-circle">@initials</div>
+                                            </div>
+                                            <div>@(item.AssignedTo.Name)</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Unassigned</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-end">
+                                        <a asp-controller="CaseComments" asp-action="Index" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="tooltip" title="View Details">
+                                            comments
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="tooltip" title="Edit Case">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                      
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger me-2" data-bs-toggle="tooltip" title="Delte Case">
+                                            <i class="bi bi-bin"> Delete</i>
+                                        </a>
+                                      
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted">Showing @Model.Count() cases</span>
+                </div>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+

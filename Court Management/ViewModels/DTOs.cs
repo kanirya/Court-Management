@@ -15,6 +15,7 @@ namespace Court_Management.ViewModels
 
         [Required]
         public string AssignedToId { get; set; }
+        public CaseStatus Status { get; set; } = CaseStatus.Submitted;
     }
 
 }

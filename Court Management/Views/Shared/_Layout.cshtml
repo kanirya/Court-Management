@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+﻿
+@using Microsoft.AspNetCore.Identity  
+@using Court_Management.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+@{  
+     var user = await UserManager.GetUserAsync(User);
+}
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
@@ -30,27 +41,21 @@
                     <i class="bi bi-chevron-left"></i>
                 </button>
             </div>
-
+         
             <div class="sidebar-menu">
-                <div class="nav-item">
-                    <a href="/" class="nav-link active">
-                        <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </div>
-
+              
                
 
-                <div class="nav-item">
-                    <a href="/clients" class="nav-link">
-                        <span class="nav-icon"><i class="bi bi-people"></i></span>
-                        <span class="nav-text">Clients</span>
-                    </a>
-                </div>
                 <div class="nav-item">
                     <a href="/Cases" class="nav-link">
                         <span class="nav-icon"><i class="bi bi-people"></i></span>
                         <span class="nav-text">Cases</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/CaseComments" class="nav-link">
+                        <span class="nav-icon"><i class="bi bi-people"></i></span>
+                        <span class="nav-text">Case Comments</span>
                     </a>
                 </div>
 
@@ -64,30 +69,23 @@
                 {    <div class="sidebar-divider"></div>
 
                 <div class="nav-item">
-                    <a href="/users" class="nav-link">
+                    <a href="/Users" class="nav-link">
                         <span class="nav-icon"><i class="bi bi-person-gear"></i></span>
                         <span class="nav-text">User Management</span>
                     </a>
                 </div>
 
-                <div class="nav-item">
-                    <a href="/settings" class="nav-link">
+           
+                }
+            }
+                 <div class="nav-item">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="nav-link">
                         <span class="nav-icon"><i class="bi bi-gear"></i></span>
                         <span class="nav-text">Settings</span>
                     </a>
                 </div>
-            
-                    <div class="sidebar-footer">
-                        <div class="user-info">
-                            <div class="user-avatar">JD</div>
-                            <div class="user-details">
-                                <div class="user-name">John Doe</div>
-                                <div class="user-role">Administrator</div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
+              
+                   
           </div>
         </aside>
 
@@ -99,26 +97,17 @@
                     <i class="bi bi-list"></i>
                 </button>
 
-                <div class="search-box">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search...">
-                </div>
+           
 
                 <div class="navbar-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="bi bi-moon"></i>
-                    </button>
-
-                    <button class="action-btn">
-                        <i class="bi bi-bell"></i>
-                        <span class="badge">3</span>
-                    </button>
+                 
+              
                     @{
                         if (User.Identity.IsAuthenticated)
                         {
                             <div class="dropdown">
-                                <button class="action-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i>
+                                <button class="btn btn-secondary" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle mx-2"></i>@user.Name
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
 
@@ -141,7 +130,7 @@
                         }
                         else
                         {
-                            <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Login</a>
+                            <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Login">Login</a>
                         }
                     }
                    
@@ -150,14 +139,7 @@
 
             <!-- Page Content -->
             <div class="content-container">
-                <div class="page-header">
-                    <h1 class="page-title">@ViewData["Title"]</h1>
-                    <div class="breadcrumb">
-                        <div class="breadcrumb-item"><a href="/">Home</a></div>
-                        <div class="breadcrumb-separator"><i class="bi bi-chevron-right"></i></div>
-                        <div class="breadcrumb-item">@ViewData["Title"]</div>
-                    </div>
-                </div>
+          
 
                 @RenderBody()
             </div>

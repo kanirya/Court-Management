@@ -30,7 +30,8 @@ namespace Court_Management.Controllers
         // GET: Cases
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Cases.Include(c => c.AssignedTo).Include(c => c.SubmittedBy);
+            var user = await _userManager.GetUserAsync(User);
+            var applicationDbContext = _context.Cases.Include(c => c.AssignedTo).Include(c => c.SubmittedBy).Where(c=>c.SubmittedBy.Id==user.Id||c.AssignedTo.Id==user.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -58,7 +59,7 @@ namespace Court_Management.Controllers
         public async Task<IActionResult> Create()
         {
             var usersInRole = await _userManager.GetUsersInRoleAsync("Advocate");
-            ViewData["AssignedToId"] = new SelectList(usersInRole, "Id", "UserName");
+            ViewData["AssignedToId"] = new SelectList(usersInRole, "Id", "Name");
             ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Id");
             var roles = _roleManager.Roles.ToList();
             ViewBag.Roles = new SelectList(roles, "Name", "Name");
@@ -108,8 +109,8 @@ namespace Court_Management.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Id", @case.AssignedToId);
-            ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Id", @case.SubmittedById);
+            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Name", @case.AssignedToId);
+            ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Name", @case.SubmittedById);
             return View(@case);
         }
 
@@ -125,8 +126,7 @@ namespace Court_Management.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     _context.Update(@case);
@@ -144,10 +144,7 @@ namespace Court_Management.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "Id", @case.AssignedToId);
-            ViewData["SubmittedById"] = new SelectList(_context.Users, "Id", "Id", @case.SubmittedById);
-            return View(@case);
+            
         }
 
         // GET: Cases/Delete/5

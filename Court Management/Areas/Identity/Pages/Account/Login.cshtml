@@ -5,79 +5,144 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<style>
+    :root {
+        --primary: #2563eb;
+        --secondary: #10b981;
+        --light: #ffffff;
+        --dark: #0f172a;
+        --text: #cbd5e1;
+        --radius: 1rem;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-blur: blur(16px);
+        --border-color: rgba(255, 255, 255, 0.3);
+        --font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--font-family);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-card {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem;
+        color: var(--light);
+    }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--light);
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #e0e0e0;
+        }
+
+        .form-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    .btn-login {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--primary);
+        border: none;
+        border-radius: 0.6rem;
+        color: var(--light);
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .btn-login:hover {
+            background: #1e40af;
+        }
+
+    .links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+        .links a {
+            color: var(--light);
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+            .links a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<div class="login-card">
+    <h2>Login to Your Account</h2>
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Input.Email">Email</label>
+            <input asp-for="Input.Email" type="email" placeholder="Enter your email" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" type="password" placeholder="Enter your password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <input asp-for="Input.RememberMe" /> Remember me
+            </label>
+        </div>
+
+        <button type="submit" class="btn-login">Sign In</button>
+
+        <div class="links">
+            <a asp-page="./ForgotPassword">Forgot password?</a> |
+            <a asp-page="./Register">Register</a>
+        </div>
+    </form>
+</div>
