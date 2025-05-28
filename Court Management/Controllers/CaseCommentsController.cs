@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Court_Management.Data;
 using Court_Management.Models;
+using Microsoft.AspNetCore.Identity;
+using Court_Management.Areas.Identity.Data;
 
 namespace Court_Management.Controllers
 {
     public class CaseCommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public CaseCommentsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public CaseCommentsController(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager=userManager;
         }
 
         // GET: CaseComments
@@ -77,14 +80,15 @@ namespace Court_Management.Controllers
             return View();
         }
 
-        // POST: CaseComments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Content,PostedAt,CaseId,AuthorId")] CaseComment caseComment)
+        public async Task<IActionResult> Create( CaseComment caseComment)
         {
-           
+
+            var user = await _userManager.GetUserAsync(User);
+            caseComment.AuthorId=user.Id;
+
                 _context.Add(caseComment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -114,7 +118,7 @@ namespace Court_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Content,PostedAt,CaseId,AuthorId")] CaseComment caseComment)
+        public async Task<IActionResult> Edit(int id, [Bind("Content,PostedAt,CaseId,AuthorId")] CaseComment caseComment)
         {
             if (id != caseComment.Id)
             {
