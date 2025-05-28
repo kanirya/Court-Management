@@ -4,13 +4,14 @@
     ViewData["Title"] = "Case Management";
 }
 
-<div class="case-management-container">
+<div class="case-management-container p-3" style="background-image: url('/images/back.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+
     <!-- Header Section with Stats -->
     <div class="header-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="page-title">Case Management</h1>
-                <p class="text-muted">Manage and track all court cases in the system</p>
+                <h1 class="page-title" style="color:var(--primary)">Case Management</h1>
+                <p class="" style="color:var(--primary-dark)">Manage and track all court cases in the system</p>
             </div>
             <div>
                 <a asp-action="Create" class="btn btn-primary">
@@ -21,12 +22,14 @@
 
         <!-- Stats Cards -->
         <div class="row mb-4">
-            <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-md-3 col-sm-6 mb-3" >
+                <div class="card stats-card"style="background-image:url('/images/1.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
+                    <div class="card-body" >
+                       
+                        <div class="d-flex justify-content-between align-items-center" style="background-image:url('/wwwroot/images/1.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
+                          
                             <div>
-                                <h6 class="text-muted mb-1">Total Cases</h6>
+                                <h6 class=" mb-1" style="color:white;" >Total Cases</h6>
                                 <h3 class="mb-0">@Model.Count()</h3>
                             </div>
                             <div class="stats-icon bg-primary-light">
@@ -37,11 +40,11 @@
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-image:url('/images/2.jpg')">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-muted mb-1">Active Cases</h6>
+                                <h6 class=" mb-1">Active Cases</h6>
                                 <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.InReview || c.Status == Court_Management.Models.CaseStatus.Submitted)</h3>
                             </div>
                             <div class="stats-icon bg-success-light">
@@ -52,11 +55,11 @@
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-image:url('/images/5.jpg')">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-muted mb-1">Approved</h6>
+                                <h6 class=" mb-1">Approved</h6>
                                 <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.Approved)</h3>
                             </div>
                             <div class="stats-icon bg-info-light">
@@ -67,11 +70,11 @@
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stats-card">
+                <div class="card stats-card" style="background-image:url('/images/back.jpg')">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-muted mb-1">Closed</h6>
+                                <h6 class=" mb-1">Closed</h6>
                                 <h3 class="mb-0">@Model.Count(c => c.Status == Court_Management.Models.CaseStatus.Closed)</h3>
                             </div>
                             <div class="stats-icon bg-danger-light">

@@ -63,8 +63,10 @@ html[data-theme="light"] {
 
 /* Base Styles */
 body {
+   background-image:url('/images/back.jpg');
+   background-size:cover;
+   background-repeat:no-repeat;
     font-family: var(--font-body);
-    background-color: var(--bg-body);
     color: var(--text-color);
     margin: 0;
     padding: 0;
@@ -407,7 +409,6 @@ html[data-theme="dark"] .search-input {
 
 /* Content Container */
 .content-container {
-    padding: 20px;
     flex: 1;
     background-color: var(--bg-body);
 }
@@ -591,8 +592,10 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
 }
 
 .stats-card {
-    border: none;
+    border: 1px solid black;
     border-radius: var(--radius-md);
+   background-size:cover;
+   color:white;
     box-shadow: var(--shadow-sm);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
